@@ -1,0 +1,10 @@
+Fontes usadas no Quiz Bíblico da EBD
+
+- Lilita One, de Juan Montoreano
+- Baloo 2, de Ek Type
+
+As duas são livres, sob a licença SIL Open Font License 1.1 (https://openfontlicense.org).
+Foram baixadas do Google Fonts (só o conjunto "latin", que cobre o português).
+
+O jogo não carrega estes arquivos diretamente: eles estão embutidos em css/fontes.css,
+para funcionar sem internet e também abrindo o index.html com dois cliques.

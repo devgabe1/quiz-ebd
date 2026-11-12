@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gabarito do Quiz Bíblico</title>
+  <link rel="stylesheet" href="css/fontes.css">
+  <style>
+    :root {
+      --tinta: #2A1A3E;
+      --tinta-2: #5E4C74;
+      --linha: #E5DCCB;
+      --fundo: #FFFFFF;
+      --papel: #FFF9EE;
+      --purpura: #6A2C91;
+      --ok: #1B6A3B;
+      --faixa: linear-gradient(90deg, #D7263D 0 25%, #F4B731 25% 50%, #2479D8 50% 75%, #8E44C9 75% 100%);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--fundo);
+      color: var(--tinta);
+      font-family: 'Baloo 2', 'Segoe UI', sans-serif;
+      font-weight: 500;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: var(--papel);
+      border-bottom: 1px solid var(--linha);
+      padding: 14px 16px 12px;
+    }
+    header::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 5px; background: var(--faixa); }
+    h1 { margin: 4px 0 2px; font-family: 'Lilita One', 'Arial Black', sans-serif; font-weight: 400; font-size: 26px; color: var(--purpura); }
+    .sub { margin: 0; color: var(--tinta-2); font-size: 14px; }
+    .ferramentas { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .ferramentas input {
+      flex: 1 1 260px;
+      min-width: 0;
+      padding: 8px 12px;
+      border: 2px solid var(--linha);
+      border-radius: 10px;
+      font: inherit;
+      font-weight: 700;
+      color: var(--tinta);
+    }
+    .ferramentas input:focus { outline: 0; border-color: var(--purpura); }
+    .ferramentas button {
+      padding: 8px 14px;
+      border: 0;
+      border-radius: 10px;
+      background: #F4B731;
+      color: var(--tinta);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 3px 0 #A9720A;
+    }
+    main { max-width: 920px; margin: 0 auto; padding: 8px 16px 40px; }
+    section { margin-top: 22px; }
+    h2 {
+      margin: 0 0 6px;
+      padding-bottom: 4px;
+      border-bottom: 3px solid var(--tinta);
+      font-family: 'Lilita One', 'Arial Black', sans-serif;
+      font-weight: 400;
+      font-size: 21px;
+      break-after: avoid;
+    }
+    h2 small { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 13px; color: var(--tinta-2); margin-left: 6px; }
+    .item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+      gap: 4px 16px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--linha);
+      break-inside: avoid;
+    }
+    .q { min-width: 0; }
+    .r { min-width: 0; font-weight: 800; color: var(--ok); }
+    .ref { display: block; font-weight: 600; font-size: 12.5px; color: var(--tinta-2); }
+    .det { display: block; font-weight: 500; font-size: 13px; color: var(--tinta-2); }
+    ol.mini { margin: 2px 0 0; padding-left: 18px; font-weight: 600; color: var(--tinta); }
+    .vazio { margin-top: 30px; text-align: center; color: var(--tinta-2); }
+    [hidden] { display: none !important; }
+
+    @media (max-width: 620px) {
+      .item { grid-template-columns: 1fr; }
+    }
+    @media print {
+      @page { size: A4; margin: 12mm; }
+      header { position: static; background: none; border: 0; padding: 0 0 6px; }
+      header::before { position: static; display: block; height: 4px; margin-bottom: 6px; }
+      .ferramentas { display: none; }
+      main { max-width: none; padding: 0; }
+      body { font-size: 10.5pt; }
+      h2 { font-size: 14pt; }
+      .item { padding: 4px 0; }
+      section { margin-top: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Gabarito do Quiz Bíblico</h1>
+    <p class="sub" id="sub"></p>
+    <div class="ferramentas">
+      <input id="busca" type="search" placeholder="Procurar pergunta ou resposta (ex.: Golias, perfume, Jonas)" autocomplete="off" aria-label="Procurar no gabarito">
+      <button type="button" id="imprimir">Imprimir</button>
+    </div>
+  </header>
+  <main id="lista"></main>
+  <p class="vazio" id="vazio" hidden>Nada encontrado com essa busca.</p>
+
+  <script src="js/dados.js"></script>
+  <script>
+  (function () {
+    'use strict';
+    const Q = window.QUIZ;
+
+    /* mesmo valor usado no jogo: 1 dia de trabalho = salário mínimo ÷ 30 (Ajustes) */
+    let salario = 1621;
+    try {
+      const salvo = JSON.parse(localStorage.getItem('quiz-ebd-v1') || 'null');
+      if (salvo && salvo.salario > 0) salario = salvo.salario;
+    } catch (e) { /* sem jogo salvo */ }
+    const diaria = Math.ceil(Math.round(salario / 30 * 1e6) / 1e4) / 100;
+
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    const num = (v, casas) => v.toLocaleString('pt-BR', { maximumFractionDigits: casas != null ? casas : (Math.abs(v) >= 100 ? 0 : Math.abs(v) >= 10 ? 1 : 2) });
+    function brl(v) {
+      if (v >= 1e9) return `R$ ${num(v / 1e9, 1)} ${v >= 2e9 ? 'bilhões' : 'bilhão'}`;
+      if (v >= 1e6) return `R$ ${num(v / 1e6, 1)} ${v >= 2e6 ? 'milhões' : 'milhão'}`;
+      if (v < 100 && Math.abs(v - Math.round(v)) > 0.004) return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      return 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+    }
+    const unidade = (v, un) => un === 'R$' ? brl(v) : `${num(v)}${un ? ' ' + (un === 't' ? 'toneladas' : un === 'L' ? 'litros' : un) : ''}`;
+
+    function item(pergunta, resposta, ref, detalhe) {
+      return `<div class="item"><div class="q">${pergunta}${detalhe ? `<span class="det">${detalhe}</span>` : ''}</div>` +
+        `<div class="r">${resposta}${ref ? `<span class="ref">${esc(ref)}</span>` : ''}</div></div>`;
+    }
+
+    /* uma linha de gabarito para cada tipo de jogo */
+    const LINHA = {
+      estimativa(m, q) {
+        if (m.visual === 'dinheiro') {
+          return item(esc(q.pergunta), brl(q.denarios * diaria), q.versiculo, esc(q.conta));
+        }
+        return item(esc(q.pergunta), unidade(q.resposta, q.unidade), q.versiculo, q.conta ? esc(q.conta) : '');
+      },
+      maioumenor(m, q) {
+        const vb = q.denarios != null ? q.denarios * diaria : q.valor;
+        const ub = q.denarios != null ? 'R$' : q.unidade;
+        const certa = vb > q.mod.valor ? q.rotulos[0] : q.rotulos[1];
+        const valB = q.mostra || unidade(vb, ub), valM = q.mod.mostra || unidade(q.mod.valor, q.mod.unidade);
+        return item(esc(q.pergunta), esc(certa), q.versiculo, `${esc(q.bib)}: ${valB}. ${esc(q.mod.texto)}: ${valM}.`);
+      },
+      pistas(m, q) {
+        return item(`<ol class="mini">${q.pistas.map(p => `<li>${esc(p)}</li>`).join('')}</ol>`, esc(q.nome), q.versiculo);
+      },
+      emoji(m, q) { return item(`<span style="font-size:20px">${q.emojis}</span>`, esc(q.resposta), q.versiculo, `Dica: ${esc(q.dica)}`); },
+      zoom(m, q) { return item(esc(q.objeto), q.historias.map(esc).join('<br>'), ''); },
+      verdadeiro(m, q) {
+        const r = m.rotulos ? (q.resposta ? m.rotulos.certo : m.rotulos.errado) : (q.resposta ? 'Está na Bíblia' : 'Não está na Bíblia');
+        return item(esc(q.frase), esc(r), q.versiculo, esc(q.explicacao));
+      },
+      escolha(m, q) { return item(`“${esc(q.frase)}”`, esc(q.opcoes[0]), q.versiculo); },
+      ordem(m, q) { return item(esc(q.titulo), `<ol class="mini">${q.eventos.map(e => `<li>${esc(e.texto)} <span class="ref" style="display:inline">(${esc(e.ref)})</span></li>`).join('')}</ol>`, ''); },
+      intruso(m, q) { return item(q.itens.map(esc).join(', '), esc(q.itens[3]), '', `${esc(q.grupo)}. ${esc(q.explicacao)}`); },
+      cardapio(m, q) { return item(`${esc(q.prato)}<span class="det">${esc(q.descricao)}</span>`, esc(q.opcoes[0]), q.versiculo); },
+      embaralhado(m, q) { return item(esc(q.texto), esc(q.versiculo), ''); },
+      lista(m, q) { return item(`${esc(q.titulo)} <span class="det">${q.pontos || m.pontos} pontos por item</span>`, q.itens.map(i => esc(i.nome)).join(', '), q.versiculo); },
+      relampago(m, q) { return item(esc(q.titulo), `<ol class="mini">${q.itens.map(([p, r]) => `<li><span style="font-weight:600;color:var(--tinta)">${esc(p)}</span> ${esc(r)}</li>`).join('')}</ol>`, ''); }
+    };
+
+    const blocos = Q.modulos.map(m => {
+      const linhas = m.perguntas.map(q => LINHA[m.tipo](m, q)).join('');
+      return `<section><h2>${m.icone} ${esc(m.nome)}<small>${m.perguntas.length} ${m.perguntas.length === 1 ? 'pergunta' : 'perguntas'}</small></h2>${linhas}</section>`;
+    });
+    blocos.push(`<section><h2>🏆 Aposta Final<small>${Q.final.length} temas</small></h2>${Q.final.map(f => item(`<b>${esc(f.tema)}</b><br>${esc(f.pergunta)}`, esc(f.resposta), f.versiculo)).join('')}</section>`);
+    document.getElementById('lista').innerHTML = blocos.join('');
+    document.getElementById('sub').textContent =
+      `As perguntas aparecem no jogo em ordem sorteada; use a busca para achar a pergunta da vez. ` +
+      `Valores em reais: 1 dia de trabalho = salário mínimo de ${brl(salario)} ÷ 30 = ${brl(diaria)} (o salário muda em Ajustes, no jogo).`;
+
+    /* busca: ignora acentos e maiúsculas, esconde o que não combina */
+    const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+    const itens = Array.from(document.querySelectorAll('.item'));
+    itens.forEach(el => { el.dataset.txt = norm(el.textContent); });
+    const secoes = Array.from(document.querySelectorAll('section'));
+    document.getElementById('busca').addEventListener('input', e => {
+      const t = norm(e.target.value.trim());
+      let algum = false;
+      itens.forEach(el => { const ok = !t || el.dataset.txt.includes(t); el.hidden = !ok; if (ok) algum = true; });
+      secoes.forEach(s => { s.hidden = !s.querySelector('.item:not([hidden])'); });
+      document.getElementById('vazio').hidden = algum;
+    });
+    document.getElementById('imprimir').addEventListener('click', () => {
+      const b = document.getElementById('busca');
+      if (b.value) { b.value = ''; b.dispatchEvent(new Event('input')); }
+      window.print();
+    });
+  })();
+  </script>
+</body>
+</html>

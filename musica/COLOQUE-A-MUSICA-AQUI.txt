@@ -1,0 +1,16 @@
+Música da revelação do campeão
+==============================
+
+Coloque nesta pasta o arquivo da música que deve tocar quando o campeão
+for revelado, com este nome:
+
+    campeao.mp3
+
+(também serve campeao.m4a, campeao.ogg ou campeao.wav)
+
+Ela começa no momento da revelação, no lugar da fanfarra do jogo, e
+continua tocando na tela final. A música de fundo do jogo volta quando ela
+termina, ou quando alguém sai da tela final.
+
+Use um arquivo de música que vocês tenham o direito de tocar no evento.
+Sem arquivo nesta pasta, o jogo toca a fanfarra própria dele.
