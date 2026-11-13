@@ -1035,13 +1035,14 @@
         <div class="cb-cab"><b class="cb-valor" id="cbv"></b></div>
         <div class="cb-regua" id="cbr">
           <div class="cb-trilho"></div><div class="cb-cheio" id="cbc"></div>
-          ${Array.from({ length: REGUA.max - REGUA.min + 1 }, (_, k) => REGUA.min + k).map(e => `<div class="cb-marco${e % 2 ? ' menor' : ''}" style="left:${pct(e)}%"><span class="cb-tique"></span>${e % 2 ? '' : `<span class="cb-preco">${rotuloMarco(e)}</span>`}</div>`).join('')}
+          ${Array.from({ length: REGUA.max - REGUA.min + 1 }, (_, k) => REGUA.min + k).map(e => `<div class="cb-marco${e % 2 ? ' menor' : ''}${e % 4 ? ' meio' : ''}" style="left:${pct(e)}%"><span class="cb-tique"></span>${e % 2 ? '' : `<span class="cb-preco">${rotuloMarco(e)}</span>`}</div>`).join('')}
           <div class="cb-pino" id="cbp"></div>
         </div>
         <div class="cb-baixo">
           <button type="button" class="btn erro gts-mm" id="cbm" aria-label="Diminuir">−</button>
           <button type="button" class="btn ok gts-mm" id="cbmais" aria-label="Aumentar">+</button>
-          <span class="cb-dica">Arraste o marcador, use −/+, as setas ← → ou a rodinha do mouse.</span>
+          <span class="cb-dica so-mouse">Arraste o marcador, use −/+, as setas ← → ou a rodinha do mouse.</span>
+          <span class="cb-dica so-toque">Arraste o marcador ou toque em −/+.</span>
           <label class="cb-digitar">ou digite: <span class="un">R$</span><input id="palpite" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="30 mil"></label>
         </div>
       </div>`;
@@ -1183,7 +1184,8 @@
           <button class="btn ok gts-mm" id="gmais" aria-label="Aumentar">+</button>
           <button class="btn azul gts-mm" id="gesq" aria-label="Mover para a esquerda">◀</button>
           <button class="btn azul gts-mm" id="gdir" aria-label="Mover para a direita">▶</button>
-          <span class="gts-dica">Tamanho: alça ⤢, botões −/+, rodinha do mouse ou setas ↑ ↓. Posição: arraste a figura ou use ◀ ▶ (setas ← →). Shift deixa o ajuste fino.</span>
+          <span class="gts-dica so-mouse">Tamanho: alça ⤢, botões −/+, rodinha do mouse ou setas ↑ ↓. Posição: arraste a figura ou use ◀ ▶ (setas ← →). Shift deixa o ajuste fino.</span>
+          <span class="gts-dica so-toque">Tamanho: puxe a alça ⤢ ou toque em −/+. Posição: arraste a figura ou use ◀ ▶.</span>
         </div>
       </div>`;
 
@@ -2229,7 +2231,7 @@
         <div class="vh-times">${time(0)}<span class="vh-x">×</span>${time(1)}</div>
       </div>
       <div class="vh-final"><span>Que comecem os jogos!</span></div>
-      <div class="vh-pular">Esc para pular</div>`;
+      <div class="vh-pular so-mouse">Esc para pular</div>`;
     document.body.appendChild(v);
     const cortarSom = Som.vinheta();
     const timers = [
@@ -2697,7 +2699,7 @@
           </div>
         </div>
       </div>
-      <div class="vh-pular">Esc para pular</div>`;
+      <div class="vh-pular so-mouse">Esc para pular</div>`;
     document.body.appendChild(c);
     const cortarSom = Som.sorteioFinal();
     const timers = [];
@@ -2982,7 +2984,7 @@
         <div class="cn-faixa"><span>${empate ? 'Empate!' : 'Campeões!'}</span></div>
       </div>
       <div class="cn-escuro" aria-hidden="true"></div><div class="cn-flash" aria-hidden="true"></div>
-      <div class="vh-pular">Esc para pular</div>`;
+      <div class="vh-pular so-mouse">Esc para pular</div>`;
     document.body.appendChild(c);
     const cortarSom = Som.campeao(empate);
     const REVELA = 13400;

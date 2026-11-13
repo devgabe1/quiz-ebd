@@ -384,7 +384,7 @@ window.QUIZ = {
       perguntas: [
         { emojis: '🧔 ⛵ 🌊 🐋 🏙️', resposta: 'Jonas e o grande peixe', testamento: 'Antigo Testamento', dica: 'Um profeta que fugiu da missão.', versiculo: 'Jonas 1–3' },
         { emojis: '🙏 🪟 📜 🦁 🦁 👼', resposta: 'Daniel na cova dos leões', testamento: 'Antigo Testamento', dica: 'Ele orava mesmo quando era proibido.', versiculo: 'Daniel 6' },
-        { emojis: '5🍞 + 2🐟 = 👨‍👩‍👧‍👦 × 5000', resposta: 'A multiplicação dos pães e peixes', testamento: 'Novo Testamento', dica: 'Um menino entregou seu lanche.', versiculo: 'Mateus 14:13-21; João 6:9' },
+        { emojis: '5🍞 + 2🐟 = 👥 × 5000', resposta: 'A multiplicação dos pães e peixes', testamento: 'Novo Testamento', dica: 'Um menino entregou seu lanche.', versiculo: 'Mateus 14:13-21; João 6:9' },
         { emojis: '🌧️ 4️⃣0️⃣ 🚢 🦒🐘 🕊️ 🌈', resposta: 'Noé e o dilúvio', testamento: 'Antigo Testamento', dica: 'Choveu 40 dias e 40 noites.', versiculo: 'Gênesis 6–9' },
         { emojis: '👶 🧺 🌊 👸', resposta: 'O bebê Moisés salvo das águas', testamento: 'Antigo Testamento', dica: 'A filha do faraó encontrou algo no rio.', versiculo: 'Êxodo 2:1-10' },
         { emojis: '🌊 ↔️ 🚶🚶🚶 🐎💦', resposta: 'A travessia do Mar Vermelho', testamento: 'Antigo Testamento', dica: 'O povo passou a pé enxuto.', versiculo: 'Êxodo 14' },
@@ -395,7 +395,7 @@ window.QUIZ = {
         { emojis: '🔥🔥🔥 👨👨👨 + 👤', resposta: 'Os três amigos de Daniel na fornalha', testamento: 'Antigo Testamento', dica: 'Um quarto homem apareceu no fogo.', versiculo: 'Daniel 3' },
         { emojis: '🧱⬆️⬆️☁️ 🗣️❓ 🗣️❓', resposta: 'A Torre de Babel', testamento: 'Antigo Testamento', dica: 'De repente, ninguém mais se entendia.', versiculo: 'Gênesis 11:1-9' },
         { emojis: '👦🐑 + 🪨 ➡️ 🧔‍♂️⚔️🛡️ 💥', resposta: 'Davi e Golias', testamento: 'Antigo Testamento', dica: 'Um pastorzinho contra um gigante.', versiculo: '1 Samuel 17' },
-        { emojis: '👫 🌳 🐍 🍽️ 😳 🚪', resposta: 'Adão e Eva e o fruto proibido', testamento: 'Antigo Testamento', dica: 'Aconteceu num jardim.', versiculo: 'Gênesis 3' },
+        { emojis: '👨👩 🌳 🐍 🍽️ 😳 🚪', resposta: 'Adão e Eva e o fruto proibido', testamento: 'Antigo Testamento', dica: 'Aconteceu num jardim.', versiculo: 'Gênesis 3' },
         { emojis: '👴 👦 ⛰️ 🪵 🐏', resposta: 'Abraão e Isaque no monte Moriá', testamento: 'Antigo Testamento', dica: 'Deus proveu um carneiro.', versiculo: 'Gênesis 22' },
         { emojis: '⛓️ 🎶 🙏 🌍💥 🔓', resposta: 'Paulo e Silas na prisão', testamento: 'Novo Testamento', dica: 'Cantavam hinos à meia-noite.', versiculo: 'Atos 16:25-34' },
         { emojis: '🔥 🌳 👞❌ 🗣️', resposta: 'A sarça ardente', testamento: 'Antigo Testamento', dica: '“Pare aí e tire as sandálias.”', versiculo: 'Êxodo 3' },
@@ -629,7 +629,7 @@ window.QUIZ = {
           { emoji: '💡', texto: 'A luz', ref: 'Gn 1:3 (1º dia)' },
           { emoji: '☀️', texto: 'O sol, a lua e as estrelas', ref: 'Gn 1:16 (4º dia)' },
           { emoji: '🐟', texto: 'Os peixes e as aves', ref: 'Gn 1:21 (5º dia)' },
-          { emoji: '👫', texto: 'O ser humano', ref: 'Gn 1:27 (6º dia)' }] },
+          { emoji: '🧍', texto: 'O ser humano', ref: 'Gn 1:27 (6º dia)' }] },
         { titulo: 'A ordem dos livros (Antigo Testamento)', eventos: [
           { emoji: '📗', texto: 'Josué', ref: '6º livro' },
           { emoji: '📘', texto: 'Juízes', ref: '7º livro' },

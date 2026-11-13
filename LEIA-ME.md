@@ -12,6 +12,22 @@ Jogo de perguntas para dois times, feito para passar no telão.
 Funciona **sem internet**, com as letras no estilo certo: as fontes (Lilita One e
 Baloo 2) estão embutidas no próprio jogo (`css/fontes.css`).
 
+## No celular
+
+O jogo também roda no celular e no tablet (pelo endereço do GitHub Pages): os jogos
+ficam numa coluna, a página rola e os botões de ação ficam presos no pé da tela. As
+dicas de teclas somem nas telas de toque; as cinemáticas terminam sozinhas.
+
+- **Emojis iguais em todo aparelho:** os emojis são os desenhos **Fluent Emoji** da
+  Microsoft (o mesmo estilo do Windows 11; licença MIT em `emoji/LICENSE.txt`), guardados
+  em `emoji/`. O `js/emoji.js` troca cada emoji da tela pelo desenho. Para usar um emoji
+  novo nas perguntas, coloque o `.svg` dele em `emoji/` (nome = código, ex. `1f525.svg`)
+  e acrescente o código na lista do `js/emoji.js`; sem isso ele aparece com o emoji do
+  próprio aparelho.
+- **iPhone no silencioso:** o jogo pede ao Safari para tratar o som como mídia (igual a
+  um vídeo), então toca mesmo com a chave no silencioso. Precisa de um toque na tela
+  antes do primeiro som e o volume de mídia do aparelho ligado.
+
 ## Vinheta de abertura e música de fundo
 
 - **Vinheta:** toca sozinha logo depois de montar os times (**Começar o jogo**) e, quando

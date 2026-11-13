@@ -7,6 +7,45 @@ window.Som = (function () {
   const NIVEIS = { normal: 0.6, alto: 1, maximo: 1.6 };
   let nivel = 'alto';
 
+  /* iPhone no silencioso: o Safari cala o som "de página" (Web Audio), mas não o de mídia.
+     1) Safari 17+: dizer que o áudio é de reprodução (como um vídeo) já basta.
+     2) Antes disso: tocar, no primeiro toque, um áudio mudo em loop num <audio>; isso
+        passa a página para o modo "mídia" e o Web Audio toca mesmo com a chave no silencioso. */
+  try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) { /* sem suporte */ }
+  let mudo = null;
+  function audioMudo() {
+    const taxa = 8000, n = taxa;          /* 1 s de silêncio, 8 bits mono */
+    const b = new DataView(new ArrayBuffer(44 + n));
+    const txt = (o, s) => { for (let i = 0; i < s.length; i++) b.setUint8(o + i, s.charCodeAt(i)); };
+    txt(0, 'RIFF'); b.setUint32(4, 36 + n, true); txt(8, 'WAVEfmt ');
+    b.setUint32(16, 16, true); b.setUint16(20, 1, true); b.setUint16(22, 1, true);
+    b.setUint32(24, taxa, true); b.setUint32(28, taxa, true); b.setUint16(32, 1, true); b.setUint16(34, 8, true);
+    txt(36, 'data'); b.setUint32(40, n, true);
+    for (let i = 0; i < n; i++) b.setUint8(44 + i, 128);
+    return URL.createObjectURL(new Blob([b], { type: 'audio/wav' }));
+  }
+  function destravarIOS() {
+    if (ac && ac.state !== 'running') ac.resume();
+    if (mudo || !/iP(hone|ad|od)|Macintosh/.test(navigator.userAgent) || !('ontouchend' in document)) return;
+    try {
+      mudo = document.createElement('audio');
+      mudo.setAttribute('playsinline', '');
+      mudo.setAttribute('x-webkit-airplay', 'deny');
+      mudo.loop = true;
+      mudo.preload = 'auto';
+      mudo.src = audioMudo();
+      const p = mudo.play();
+      if (p && p.catch) p.catch(() => { mudo = null; });   /* tenta de novo no próximo toque */
+    } catch (e) { mudo = null; }
+  }
+  ['touchend', 'pointerdown', 'keydown', 'click'].forEach(ev => document.addEventListener(ev, destravarIOS, { capture: true, passive: true }));
+  /* voltar para a aba (ou desbloquear a tela) retoma o som */
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) return;
+    if (ac && ac.state !== 'running') ac.resume();
+    if (mudo && mudo.paused) mudo.play().catch(() => {});
+  });
+
   /* Cria o contexto de áudio mesmo com os efeitos desligados (a música de fundo usa o mesmo). */
   function garantir() {
     if (!ac) {
