@@ -15,8 +15,7 @@ Baloo 2) estão embutidas no próprio jogo (`css/fontes.css`).
 ## Vinheta de abertura e música de fundo
 
 - **Vinheta:** toca sozinha logo depois de montar os times (**Começar o jogo**) e, quando
-  termina, aparece o painel dos jogos. Para ver de novo, na tela inicial aperte **V** (ou o
-  botão **Vinheta de abertura**).
+  termina, aparece o painel dos jogos.
   São uns 13 segundos: o emblema da Quadrangular se monta peça por peça, o título entra,
   os dois times aparecem e termina com "Que comecem os jogos!" e confete.
   Só a tecla **Esc** pula (clique não pula, para ninguém pular sem querer).
@@ -69,7 +68,7 @@ Vale fazer no computador e no projetor de verdade, uns dias antes:
    ler as perguntas e o placar.
 3. Em **Ajustes**, teste o volume dos sons nas caixas da igreja (comece no **Alto**;
    o volume de verdade se acerta melhor na mesa de som ou na caixa).
-   Rode a vinheta (**V**) e acerte o volume da música de fundo para não atrapalhar as falas.
+   Monte os times de teste para ver a vinheta e acerte o volume da música de fundo para não atrapalhar as falas.
 4. Monte os times com nomes de teste e jogue duas rodadas (inclusive a roleta de nomes).
 5. Imprima o gabarito.
 6. No dia, comece um **Novo jogo** (o ensaio fica salvo no navegador).
@@ -129,14 +128,16 @@ O jogo fica salvo sozinho: se fechar sem querer, abra de novo e clique em
 | D | Dica ou próxima pista |
 | 1 a 4 | Escolher uma opção (nos jogos de duas opções, 1 e 2) |
 | T ou Espaço | Pausar o cronômetro |
-| V | Trocar a vez (no painel) ou vinheta de abertura (na tela inicial) |
+| V | Trocar a vez (no painel) |
 | N | Ligar ou desligar a música de fundo |
 | Esc | Voltar ao painel |
 
 Clicar no placar de um time abre a correção de pontos (e o "desfazer").
 
-Para o rodapé do painel ficar limpo, **Trocar a vez**, **Corrigir placar**, **Tela cheia**
-e **Atalhos** ficam em **Ajustes → Durante o jogo** (as teclas V, F e ? continuam valendo).
+Para o rodapé do painel ficar limpo, **Trocar a vez**, **Corrigir placar**, **Tela cheia**,
+**Atalhos** e **Encerrar e ver o campeão** ficam em **Ajustes → Durante o jogo** (as teclas
+V, F e ? continuam valendo). Encerrar por lá pula o que faltar da Aposta Final; no fim normal,
+a própria Aposta Final leva ao campeão.
 
 ## Os 16 jogos
 

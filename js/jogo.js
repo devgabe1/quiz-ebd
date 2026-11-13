@@ -390,7 +390,7 @@
       ['D', 'Dica ou próxima pista'],
       ['1 a 4', 'Escolher uma opção'],
       ['T ou Espaço', 'Pausar ou continuar o cronômetro'],
-      ['V', 'Trocar a vez (no painel) ou vinheta (na tela inicial)'],
+      ['V', 'Trocar a vez (no painel)'],
       ['N', 'Ligar ou desligar a música de fundo'],
       ['F', 'Tela cheia'],
       ['Esc', 'Voltar ao painel'],
@@ -2287,7 +2287,6 @@
       else { novoJogo(); irConfig('inicio'); }
     };
     bandeja([
-      { txt: 'Vinheta de abertura', ico: '🎬', cls: 'azul', tecla: 'v', fn: vinheta },
       { txt: 'Tela cheia', ico: '⛶', tecla: 'f', fn: telaCheia },
       { txt: 'Atalhos', ico: '⌨', tecla: '?', fn: ajuda },
       /* só na tela inicial: durante o jogo, abrir o gabarito mostraria as respostas no telão */
@@ -2368,7 +2367,8 @@
                 <button type="button" class="btn claro" id="cf-tela">⛶ Tela cheia <span class="cf-dica">tecla F</span></button>
                 <button type="button" class="btn claro" id="cf-atalhos">⌨ Atalhos do teclado <span class="cf-dica">tecla ?</span></button>
               </div>
-              ${origem === 'painel' ? '<p class="ajuda-campo">Clicar no placar de um time, no alto da tela, também abre a correção de pontos.</p>' : ''}
+              ${origem === 'painel' ? `<p class="ajuda-campo">Clicar no placar de um time, no alto da tela, também abre a correção de pontos.</p>
+              <div class="cf-acoes cf-encerrar"><button type="button" class="btn erro" id="cf-encerrar">🏁 Encerrar e ver o campeão <span class="cf-dica">pula o que faltar da Aposta Final</span></button></div>` : ''}
             </div>
           </div>
         </div>`;
@@ -2379,6 +2379,8 @@
       ligar('cf-placar', () => { Som.clique(); abrirAjustePlacar(); });
       ligar('cf-tela', () => { Som.clique(); telaCheia(); });
       ligar('cf-atalhos', () => { Som.clique(); ajuda(); });
+      /* encerrar descarta os ajustes não salvos (o som volta ao que estava) */
+      ligar('cf-encerrar', () => { Som.clique(); confirmar('Encerrar o jogo e mostrar o campeão?', () => { Som.ligado = S.som; Som.nivel = S.volume; Musica.nivel = S.musica; Musica.trilha = S.trilha; irFim(); }, 'Encerrar'); });
       $$('[data-nome]').forEach(inp => { inp.oninput = () => { r.times[+inp.dataset.nome].nome = inp.value; }; });
       $('#cf-salario').oninput = e => {
         const v = lerNumero(e.target.value);
@@ -2501,11 +2503,10 @@
       { txt: 'Girar a roleta', ico: '🎡', cls: 'primario', tecla: 'Enter', fn: abrirRoleta },
       '|',
       { txt: 'Ajustes', ico: '⚙️', fn: () => irConfig('painel') },
-      { txt: 'Encerrar e ver o campeão', ico: '🏁', fn: () => confirmar('Encerrar o jogo e mostrar o campeão?', irFim, 'Encerrar') },
       { txt: 'Som', ico: S.som ? '🔊' : '🔇', soIcone: true, fn: () => { alternarSom(); irPainel(); } },
       { txt: 'Música de fundo (N)', ico: S.musica === 'desligada' ? '🔕' : '🎵', soIcone: true, id: 'b-musica', fn: alternarMusica }
     ]);
-    /* trocar a vez, corrigir placar, tela cheia e atalhos ficam nos Ajustes; o V continua trocando a vez */
+    /* trocar a vez, corrigir placar, tela cheia, atalhos e encerrar ficam nos Ajustes; o V continua trocando a vez */
     teclasLocais = { v: trocarVez };
   }
 
