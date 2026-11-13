@@ -18,6 +18,10 @@
   const SVGNS = 'http://www.w3.org/2000/svg', XLINK = 'http://www.w3.org/1999/xlink';
   const PULAR = { SCRIPT: 1, STYLE: 1, TEXTAREA: 1, INPUT: 1, OPTION: 1, TITLE: 1, CANVAS: 1 };
 
+  const SIMBOLOS = /([▶◀⏭⏮⏯⏹⏸⏪⏩⬇⬅✔✖↕↩↪⌨©®™™✳✴❇‼⁉▪▫◻◼])(?![︎️])/g;
+  /* o desenho Fluent tem uma folga em volta: 18% maior fica do tamanho do emoji do Windows */
+  const ESCALA = 1.18;
+
   function img(e) {
     const i = document.createElement('img');
     i.className = 'emoji';
@@ -37,7 +41,7 @@
     const x = parseFloat(t.getAttribute('x')) || 0, y = parseFloat(t.getAttribute('y')) || 0;
     const ancora = t.getAttribute('text-anchor') || 'start';
     const im = document.createElementNS(SVGNS, 'image');
-    const lado = fs;
+    const lado = fs * ESCALA;
     const x0 = ancora === 'middle' ? x - lado / 2 : ancora === 'end' ? x - lado : x;
     const base = t.getAttribute('dominant-baseline');
     const y0 = base === 'central' || base === 'middle' ? y - lado / 2 : y - lado * 0.85;
@@ -54,7 +58,11 @@
   function trocarNoTexto(no) {
     const pai = no.parentNode;
     if (!pai || PULAR[pai.nodeName] || pai.isContentEditable) return;
-    const s = no.nodeValue;
+    let s = no.nodeValue;
+    /* símbolos de botão (▶ ◀ ⏭ ✔...): o iPhone desenha como emoji azul; o seletor
+       de texto (FE0E) pede o símbolo simples, igual ao do computador */
+    SIMBOLOS.lastIndex = 0;
+    if (SIMBOLOS.test(s)) { s = s.replace(SIMBOLOS, '$1︎'); no.nodeValue = s; }
     RE.lastIndex = 0;
     if (!RE.test(s)) return;
     if (pai.namespaceURI === SVGNS) { if (pai.nodeName === 'text') trocarTextoSvg(pai); return; }

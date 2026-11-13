@@ -28,7 +28,7 @@
 * { box-sizing: border-box; }
 
 /* emojis Fluent (js/emoji.js): imagem do tamanho da letra, iguais em todo aparelho */
-img.emoji { height: 1em; width: 1em; margin: 0 0.04em; vertical-align: -0.14em; display: inline-block; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+img.emoji { height: 1.18em; width: 1.18em; margin: -0.09em 0.08em; vertical-align: -0.24em; display: inline-block; pointer-events: none; user-select: none; -webkit-user-drag: none; }
 
 html {
   font-size: clamp(12px, calc(1.05vmin + 0.45vw), 30px);
