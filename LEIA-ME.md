@@ -20,9 +20,11 @@ dicas de teclas somem nas telas de toque; as cinemáticas terminam sozinhas.
 
 - **Emojis iguais em todo aparelho:** os emojis são os desenhos **Fluent Emoji** da
   Microsoft (o mesmo estilo do Windows 11; licença MIT em `emoji/LICENSE.txt`), guardados
-  em `emoji/`. O `js/emoji.js` troca cada emoji da tela pelo desenho. Para usar um emoji
-  novo nas perguntas, coloque o `.svg` dele em `emoji/` (nome = código, ex. `1f525.svg`)
-  e acrescente o código na lista do `js/emoji.js`; sem isso ele aparece com o emoji do
+  em `emoji/` como imagens `.webp` de 256 px (desenhadas em alta resolução a partir do SVG
+  oficial e reduzidas com suavização, para as bordas ficarem lisas em qualquer tela). O
+  `js/emoji.js` troca cada emoji da tela pela imagem. Para usar um emoji novo nas perguntas,
+  coloque o `.webp` dele em `emoji/` (nome = código, ex. `1f525.webp`, fundo transparente) e
+  acrescente o código na lista do `js/emoji.js`; sem isso ele aparece com o emoji do
   próprio aparelho.
 - **iPhone no silencioso:** o jogo pede ao Safari para tratar o som como mídia (igual a
   um vídeo), então toca mesmo com a chave no silencioso. Precisa de um toque na tela

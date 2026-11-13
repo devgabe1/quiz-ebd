@@ -2508,7 +2508,7 @@
     $$('.modulo[data-m]').forEach(b => { b.onclick = () => { Som.clique(); abrirModulo(b.dataset.m); }; });
     $('#m-final').onclick = () => { Som.clique(); abrirFinal(); };
     bandeja([
-      { txt: 'Girar a roleta', ico: '🎡', cls: 'primario', tecla: 'Enter', fn: abrirRoleta },
+      { txt: 'Girar a roleta', cls: 'primario', tecla: 'Enter', fn: abrirRoleta },
       '|',
       { txt: 'Ajustes', ico: '⚙️', fn: () => irConfig('painel') },
     ]);
@@ -2554,7 +2554,7 @@
         <p>Vez de ${nomeTime(S.vez)}. Girem para sortear o próximo jogo!</p>
         <div id="sorteado"></div>
         <div class="modal-acoes" style="justify-content:flex-start">
-          <button class="btn primario grande" id="girar">🎡 Girar!</button>
+          <button class="btn primario grande" id="girar">Girar!</button>
           <button class="btn" id="fechar-roleta">Fechar</button>
         </div>
       </div></div>`);
