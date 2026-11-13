@@ -342,7 +342,6 @@
       if (b.tecla) teclas[b.tecla.length === 1 ? b.tecla.toLowerCase() : b.tecla] = bt;
     });
   }
-  function bPainel() { return { txt: 'Painel', ico: '🏠', tecla: 'Escape', fn: () => irPainel() }; }
   function bPular() { return { txt: 'Pular', ico: '⏭', fn: pular }; }
   /* Regra atual: cada equipe joga a sua própria pergunta, então não há "passar a vez". */
   function bPassar() { return null; }
@@ -399,7 +398,7 @@
       ['V', 'Trocar a vez (no painel)'],
       ['N', 'Ligar ou desligar a música de fundo'],
       ['F', 'Tela cheia'],
-      ['Esc', 'Voltar ao painel'],
+      ['Esc', 'Fechar janela ou pular cinemática'],
       ['Clique no placar', 'Corrigir pontos ou desfazer']
     ];
     abrirModal(`<div class="cartao modal" role="dialog" aria-modal="true">
@@ -852,8 +851,7 @@
     bandeja([
       { txt: `${opc.certo || 'Acertou'} +${v}`, ico: '✓', cls: 'ok', tecla: 'a', fn: () => concluir(v) },
       opc.meio ? { txt: `${opc.meioTxt || 'Meio certo'} +${metade(v)}`, ico: '½', cls: 'meio', tecla: 'm', fn: () => concluir(metade(v)) } : null,
-      { txt: 'Errou', ico: '✗', cls: 'erro', tecla: 'e', fn: () => concluir(0) },
-      '|', bPainel()
+      { txt: 'Errou', ico: '✗', cls: 'erro', tecla: 'e', fn: () => concluir(0) }
     ]);
   }
 
@@ -969,7 +967,7 @@
     }
     inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); revelar(); } });
 
-    bandeja([{ txt: 'Revelar', ico: '👀', cls: 'primario', tecla: 'r', fn: revelar }, '|', bPular(), bPainel()]);
+    bandeja([{ txt: 'Revelar', ico: '👀', cls: 'primario', tecla: 'r', fn: revelar }, '|', bPular()]);
     Crono.montar(mod.tempo, { auto: true });
 
     function revelar() {
@@ -1340,7 +1338,7 @@
     mudar(g);
     comSom = true;
 
-    bandeja([{ txt: 'Confirmar tamanho', ico: '✔', cls: 'primario', tecla: 'Enter', fn: confirmar }, '|', bPular(), bPainel()]);
+    bandeja([{ txt: 'Confirmar tamanho', ico: '✔', cls: 'primario', tecla: 'Enter', fn: confirmar }, '|', bPular()]);
     Crono.montar(mod.tempo, { auto: true });
 
     function confirmar() {
@@ -1442,7 +1440,7 @@
     const btns = $$('.mm-btn', corpo);
     btns.forEach(b => { b.onclick = () => escolher(b.dataset.r); });
     teclasLocais = { '1': () => escolher('mais'), '2': () => escolher('menos'), ArrowUp: () => escolher('mais'), ArrowDown: () => escolher('menos') };
-    bandeja([bPular(), bPainel()]);
+    bandeja([bPular()]);
     Crono.montar(mod.tempo, { auto: true });
 
     function escolher(r) {
@@ -1525,7 +1523,7 @@
         n < q.pistas.length ? { txt: `Próxima pista (vale ${valorDe(n + 1)})`, ico: '➕', cls: 'azul', tecla: 'd', fn: proxima } : null,
         { txt: 'Revelar quem é', ico: '👀', cls: 'primario', tecla: 'r', fn: revelar },
         bPassar(botoes),
-        '|', bPular(), bPainel()
+        '|', bPular()
       ]);
     }
     function revelar() {
@@ -1565,7 +1563,7 @@
         !dicaUsada ? { txt: `Dica (vale ${metade(ctx.valor)})`, ico: '💡', cls: 'azul', tecla: 'd', fn: dica } : null,
         { txt: 'Revelar', ico: '👀', cls: 'primario', tecla: 'r', fn: revelar },
         bPassar(botoes),
-        '|', bPular(), bPainel()
+        '|', bPular()
       ]);
     }
     function dica() {
@@ -1655,15 +1653,15 @@
     }
     function botoes() {
       if (fase === 'pronto') {
-        bandeja([{ txt: 'Começar o zoom', ico: '▶', cls: 'primario', tecla: 'Enter', fn: comecar }, '|', bPular(), bPainel()]);
+        bandeja([{ txt: 'Começar o zoom', ico: '▶', cls: 'primario', tecla: 'Enter', fn: comecar }, '|', bPular()]);
       } else if (fase === 'rodando') {
-        bandeja([{ txt: 'Parar! Vão responder', ico: '✋', cls: 'primario', tecla: 'Enter', fn: parar }, { txt: 'Revelar', ico: '👀', tecla: 'r', fn: revelar }, '|', bPainel()]);
+        bandeja([{ txt: 'Parar! Vão responder', ico: '✋', cls: 'primario', tecla: 'Enter', fn: parar }, { txt: 'Revelar', ico: '👀', tecla: 'r', fn: revelar }]);
       } else if (fase === 'parado') {
         bandeja([
           { txt: 'Revelar', ico: '👀', cls: 'primario', tecla: 'r', fn: revelar },
           t < 1 ? { txt: 'Continuar o zoom', ico: '▶', cls: 'azul', tecla: 'Enter', fn: comecar } : null,
           bPassar(() => { aplicar(); botoes(); }),
-          '|', bPular(), bPainel()
+          '|', bPular()
         ]);
       }
     }
@@ -1692,7 +1690,7 @@
     btns.forEach(b => { b.onclick = () => escolher(b.dataset.r === '1'); });
     /* só 1 e 2: o N fica livre para ligar e desligar a música */
     teclasLocais = { '1': () => escolher(true), '2': () => escolher(false) };
-    bandeja([bPular(), bPainel()]);
+    bandeja([bPular()]);
     Crono.montar(mod.tempo, { auto: true });
 
     function escolher(r) {
@@ -1742,7 +1740,7 @@
     function botoes() {
       bandeja([
         { txt: 'Confirmar resposta', ico: '✔', cls: 'primario', tecla: 'Enter', fn: confirmarResp, desativado: sel === null },
-        '|', bPular(), bPainel()
+        '|', bPular()
       ]);
     }
     function confirmarResp() {
@@ -1873,7 +1871,7 @@
       bandeja([
         { txt: 'Conferir', ico: '✔', cls: 'primario', tecla: 'Enter', fn: conferir, desativado: !cheio },
         { txt: 'Limpar', ico: '↺', fn: () => { slots.fill(null); desenhar(); }, desativado: slots.every(s => !s) },
-        '|', bPular(), bPainel()
+        '|', bPular()
       ]);
     }
     function conferir() {
@@ -1979,7 +1977,7 @@
         !refMostrada ? { txt: `Dica: a referência (vale ${metade(ctx.valor)})`, ico: '💡', cls: 'azul', tecla: 'd', fn: dica } : null,
         bPassar(botoes),
         { txt: 'Limpar', ico: '↺', fn: () => { linha.length = 0; desenhar(); } },
-        '|', bPular(), bPainel()
+        '|', bPular()
       ]);
     }
     function dica() {
@@ -2032,7 +2030,7 @@
           <p>Um minuto! Respondam o máximo que conseguirem.<br>Cada acerto vale ${PTS} pontos.</p>
         </div>
       </div>`;
-    bandeja([{ txt: 'Começar!', ico: '⚡', cls: 'primario grande', tecla: 'Enter', fn: comecar }, '|', bPular(), bPainel()]);
+    bandeja([{ txt: 'Começar!', ico: '⚡', cls: 'primario grande', tecla: 'Enter', fn: comecar }, '|', bPular()]);
     Crono.montar(mod.tempo, { forcar: true, aoAcabar: encerrar });
     ctx.limpar = () => { rodando = false; };
 
@@ -2153,7 +2151,7 @@
       </div>`;
     const inp = $('#li', corpo), ret = $('#lr', corpo);
 
-    bandeja([{ txt: 'Começar!', ico: '▶', cls: 'primario', tecla: 'Enter', fn: comecar }, '|', bPular(), bPainel()]);
+    bandeja([{ txt: 'Começar!', ico: '▶', cls: 'primario', tecla: 'Enter', fn: comecar }, '|', bPular()]);
     Crono.montar(mod.tempo, { forcar: true, aoAcabar: encerrar });
 
     function comecar() {
@@ -2795,7 +2793,7 @@
     if (feitas >= RODADAS_FINAL) {
       corpo.innerHTML = `<div class="fin"><h2 class="fin-titulo">Aposta Final concluída</h2>
         <p class="fin-sub">As ${RODADAS_FINAL} rodadas já foram jogadas. Hora de conhecer o campeão!</p></div>`;
-      bandeja([bPainel(), '|', { txt: 'Ver o campeão', ico: '🏆', cls: 'primario grande', tecla: 'Enter', fn: irFim }]);
+      bandeja([{ txt: 'Ver o campeão', ico: '🏆', cls: 'primario grande', tecla: 'Enter', fn: irFim }]);
       return;
     }
     /* representantes e tema já sorteados (saiu para o painel no meio): continua nas apostas */
@@ -2845,7 +2843,6 @@
       });
       $$('input', corpo).forEach(inp => { inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); confirmarApostas(); } }); });
       bandeja([
-        bPainel(),
         { txt: 'Sortear de novo', ico: ICO_SORTEAR, cls: 'azul', fn: () => sortear({ reps: reps(), tema: fi }) },
         '|',
         { txt: 'Confirmar apostas', ico: '✔', cls: 'primario', tecla: 'Enter', fn: confirmarApostas }
@@ -2917,7 +2914,7 @@
         if (res.includes(true)) { Som.acerto(); Efeitos.confete(); } else Som.erro();
         setTimeout(() => {
           bandeja(rodada < RODADAS_FINAL
-            ? [bPainel(), '|', { txt: `Ir para a ${rodada + 1}ª rodada`, ico: '▶', cls: 'primario grande', tecla: 'Enter', fn: abrirFinal }]
+            ? [{ txt: `Ir para a ${rodada + 1}ª rodada`, ico: '▶', cls: 'primario grande', tecla: 'Enter', fn: abrirFinal }]
             : [{ txt: 'Ver o campeão', ico: '🏆', cls: 'primario grande', tecla: 'Enter', fn: irFim }]);
         }, 1500);
       }

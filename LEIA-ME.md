@@ -148,7 +148,7 @@ O jogo fica salvo sozinho: se fechar sem querer, abra de novo e clique em
 | T ou Espaço | Pausar o cronômetro |
 | V | Trocar a vez (no painel) |
 | N | Ligar ou desligar a música de fundo |
-| Esc | Voltar ao painel |
+| Esc | Fechar janela ou pular cinemática |
 
 Clicar no placar de um time abre a correção de pontos (e o "desfazer").
 
