@@ -21,6 +21,12 @@
   const CORES_MOD = ['carmesim', 'ouro', 'azul', 'purpura'];
   const EMOJIS_TIME = ['🦁', '🐑', '🕊️', '🐟', '🔥', '⭐', '👑', '🍇', '🌿', '🐫', '🦅', '⚓', '🏹', '🎺', '📜', '🌾'];
 
+  /* ícone de "sortear de novo": duas setas em círculo, na cor do texto do botão
+     (mesmo estilo do ▶ do "Começar a rodada", igual no PC e no celular) */
+  const ICO_SORTEAR = '<svg class="ico-svg" viewBox="0 0 24 24" aria-hidden="true">' +
+    '<path d="M19.6 10.2A8 8 0 0 0 5.2 7.6M4.4 13.8a8 8 0 0 0 14.4 2.6" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/>' +
+    '<path d="M21.2 3.6v7.2h-7.2z M2.8 20.4v-7.2h7.2z" fill="currentColor"/></svg>';
+
   const $ = (s, r) => (r || document).querySelector(s);
   const $$ = (s, r) => Array.from((r || document).querySelectorAll(s));
   const el = {
@@ -736,7 +742,7 @@
         }).join('')}</div>
         <div class="modal-acoes sorteio-acoes">
           <button class="btn" id="s-cancelar">Cancelar</button>
-          <button class="btn azul" id="s-de-novo" disabled>🔄 Sortear de novo</button>
+          <button class="btn azul" id="s-de-novo" disabled>${ICO_SORTEAR} Sortear de novo</button>
           <button class="btn primario grande" id="s-comecar" disabled>▶ Começar a rodada</button>
         </div></div>`);
       $('#s-cancelar').onclick = cancelar;
@@ -2505,8 +2511,6 @@
       { txt: 'Girar a roleta', ico: '🎡', cls: 'primario', tecla: 'Enter', fn: abrirRoleta },
       '|',
       { txt: 'Ajustes', ico: '⚙️', fn: () => irConfig('painel') },
-      { txt: 'Som', ico: S.som ? '🔊' : '🔇', soIcone: true, fn: () => { alternarSom(); irPainel(); } },
-      { txt: 'Música de fundo (N)', ico: S.musica === 'desligada' ? '🔕' : '🎵', soIcone: true, id: 'b-musica', fn: alternarMusica }
     ]);
     /* trocar a vez, corrigir placar, tela cheia, atalhos e encerrar ficam nos Ajustes; o V continua trocando a vez */
     teclasLocais = { v: trocarVez };
@@ -2842,7 +2846,7 @@
       $$('input', corpo).forEach(inp => { inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); confirmarApostas(); } }); });
       bandeja([
         bPainel(),
-        { txt: 'Sortear de novo', ico: '🔄', cls: 'azul', fn: () => sortear({ reps: reps(), tema: fi }) },
+        { txt: 'Sortear de novo', ico: ICO_SORTEAR, cls: 'azul', fn: () => sortear({ reps: reps(), tema: fi }) },
         '|',
         { txt: 'Confirmar apostas', ico: '✔', cls: 'primario', tecla: 'Enter', fn: confirmarApostas }
       ]);

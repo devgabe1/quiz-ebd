@@ -96,6 +96,8 @@ input, select { font: inherit; }
 .btn:active:not(:disabled) { transform: translateY(0.3rem); box-shadow: 0 0 0 var(--b-esc); }
 .btn:disabled { opacity: 0.4; cursor: default; }
 .btn .ico { font-size: 1.15em; }
+/* ícones desenhados (ex.: sortear de novo): tamanho da letra, cor do texto */
+.ico-svg { width: 1em; height: 1em; flex: none; display: inline-block; vertical-align: -0.15em; }
 .btn kbd {
   font-family: var(--f-texto);
   font-size: 0.72em;

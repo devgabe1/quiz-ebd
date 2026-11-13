@@ -153,7 +153,8 @@ Clicar no placar de um time abre a correção de pontos (e o "desfazer").
 Para o rodapé do painel ficar limpo, **Trocar a vez**, **Corrigir placar**, **Tela cheia**,
 **Atalhos** e **Encerrar e ver o campeão** ficam em **Ajustes → Durante o jogo** (as teclas
 V, F e ? continuam valendo). Encerrar por lá pula o que faltar da Aposta Final; no fim normal,
-a própria Aposta Final leva ao campeão.
+a própria Aposta Final leva ao campeão. Som e música também se mudam só em **Ajustes**
+(a tecla N continua ligando e desligando a música).
 
 ## Os 16 jogos
 
