@@ -127,11 +127,12 @@
 
     /* mesmo valor usado no jogo: 1 dia de trabalho = salário mínimo ÷ 30 (Ajustes) */
     let salario = 1621;
+    Versoes.aplicar('nvi');   /* padrão do jogo */
     try {
       const salvo = JSON.parse(localStorage.getItem('quiz-ebd-v1') || 'null');
       if (salvo && salvo.salario > 0) salario = salvo.salario;
       /* mesma versão da Bíblia escolhida nos Ajustes do jogo */
-      if (salvo && salvo.versao) Versoes.aplicar(salvo.versao);
+      if (salvo && salvo.versao && salvo.versaoEscolhida) Versoes.aplicar(salvo.versao);
     } catch (e) { /* sem jogo salvo */ }
     const diaria = Math.ceil(Math.round(salario / 30 * 1e6) / 1e4) / 100;
 

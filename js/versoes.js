@@ -1,4 +1,4 @@
-/* Versões da Bíblia. O jogo foi escrito na NTLH (o padrão, em js/dados.js); aqui ficam
+/* Versões da Bíblia. O padrão do jogo é a NVI. O texto-base em js/dados.js está na NTLH; aqui ficam
    só as diferenças das outras traduções:
    - as citações em que o jogo é a própria frase (Versículo Embaralhado e Quem Disse?),
      copiadas palavra por palavra de cada tradução;
@@ -10,11 +10,11 @@
   'use strict';
 
   const VERSOES = [
+    { id: 'nvi', sigla: 'NVI', nome: 'Nova Versão Internacional', credito: 'Nova Versão Internacional (NVI) © 2000, 2011 Biblica, Inc.' },
     { id: 'ntlh', sigla: 'NTLH', nome: 'Nova Tradução na Linguagem de Hoje', credito: 'Nova Tradução na Linguagem de Hoje (NTLH) © 2000 Sociedade Bíblica do Brasil' },
     { id: 'arc', sigla: 'ARC', nome: 'Almeida Revista e Corrigida', credito: 'Almeida Revista e Corrigida (ARC) © 2009 Sociedade Bíblica do Brasil' },
     { id: 'ara', sigla: 'ARA', nome: 'Almeida Revista e Atualizada', credito: 'Almeida Revista e Atualizada (ARA) © 1993 Sociedade Bíblica do Brasil' },
-    { id: 'naa', sigla: 'NAA', nome: 'Nova Almeida Atualizada', credito: 'Nova Almeida Atualizada (NAA) © 2017 Sociedade Bíblica do Brasil' },
-    { id: 'nvi', sigla: 'NVI', nome: 'Nova Versão Internacional', credito: 'Nova Versão Internacional (NVI) © 2000, 2011 Biblica, Inc.' }
+    { id: 'naa', sigla: 'NAA', nome: 'Nova Almeida Atualizada', credito: 'Nova Almeida Atualizada (NAA) © 2017 Sociedade Bíblica do Brasil' }
   ];
 
   /* Mt 18:22: na NTLH são 77 vezes; nas outras, "setenta vezes sete" (490) */
@@ -209,7 +209,7 @@
 
   let atual = 'ntlh';
   function aplicar(id) {
-    if (!TEXTOS[id] && id !== 'ntlh') id = 'ntlh';
+    if (!TEXTOS[id] && id !== 'ntlh') id = 'nvi';
     const t = TEXTOS[id] || {};
     Object.keys(ORIGINAL).forEach(c => {
       const v = id === 'ntlh' ? ORIGINAL[c] : (c in t ? t[c] : (c in PARAFRASES ? PARAFRASES[c] : ORIGINAL[c]));
@@ -217,7 +217,7 @@
     });
     atual = id;
   }
-  const info = id => VERSOES.find(v => v.id === (id || atual)) || VERSOES[0];
+  const info = id => VERSOES.find(v => v.id === (id || atual)) || VERSOES[0];   /* VERSOES[0] = NVI */
 
   window.Versoes = {
     LISTA: VERSOES,

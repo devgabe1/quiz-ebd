@@ -187,9 +187,10 @@ uma ou duas perguntas menos conhecidas para dar desafio.
 
 ## Versão da Bíblia
 
-A versão padrão é a **NTLH** (Nova Tradução na Linguagem de Hoje). Em **Ajustes → Versão
-da Bíblia** dá para trocar por **ARC**, **ARA**, **NAA** ou **NVI**; o gabarito segue a
-mesma escolha. Os textos de cada versão estão em `js/versoes.js`, copiados palavra por
+A versão padrão é a **NVI** (Nova Versão Internacional). Em **Ajustes → Versão da
+Bíblia** dá para trocar por **NTLH**, **ARC**, **ARA** ou **NAA**; o gabarito segue a
+mesma escolha. (O texto-base de `js/dados.js` está na NTLH; as outras versões trocam só o
+que muda.) Os textos de cada versão estão em `js/versoes.js`, copiados palavra por
 palavra de cada tradução (conferidos no app da Bíblia, bible.com). O que muda:
 
 - **Versículo Embaralhado** e **Quem Disse?**: as frases saem na versão escolhida.
