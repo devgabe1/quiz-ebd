@@ -187,12 +187,28 @@ uma ou duas perguntas menos conhecidas para dar desafio.
 
 ## Versão da Bíblia
 
-Todas as citações estão na **NTLH** (Nova Tradução na Linguagem de Hoje), conferidas
-no texto da NTLH. Onde a NTLH muda a resposta, o jogo segue a NTLH: por exemplo, em
-Mt 18:22 Jesus manda perdoar "setenta e sete vezes" (resposta 77), e as moedas aparecem
-como "moedas de prata" (o jogo explica o valor original em denários e talentos).
+A versão padrão é a **NTLH** (Nova Tradução na Linguagem de Hoje). Em **Ajustes → Versão
+da Bíblia** dá para trocar por **ARC**, **ARA**, **NAA** ou **NVI**; o gabarito segue a
+mesma escolha. Os textos de cada versão estão em `js/versoes.js`, copiados palavra por
+palavra de cada tradução (conferidos no app da Bíblia, bible.com). O que muda:
 
-Textos bíblicos: Nova Tradução na Linguagem de Hoje (NTLH) © 2000 Sociedade Bíblica do Brasil.
+- **Versículo Embaralhado** e **Quem Disse?**: as frases saem na versão escolhida.
+- **Mt 18:22** (Bíblia em Números): na NTLH Jesus manda perdoar "setenta e sete vezes"
+  (resposta 77); nas outras, "setenta vezes sete" (resposta 490).
+- **Fruto do Espírito** (Complete a Lista): os nomes seguem a versão (ex.: na ARC, gozo,
+  longanimidade, benignidade, fé, mansidão e temperança). Qualquer sinônimo de qualquer
+  versão é aceito.
+- Nas explicações e curiosidades, as citações literais da NTLH viram paráfrases sem aspas
+  nas outras versões (assim nada aparece como "palavra exata" de uma tradução que não é).
+
+Na NTLH as moedas aparecem como "moedas de prata"; o jogo explica o valor original em
+denários e talentos.
+
+Textos bíblicos: Nova Tradução na Linguagem de Hoje (NTLH) © 2000 Sociedade Bíblica do
+Brasil; Almeida Revista e Corrigida (ARC) © 2009, Almeida Revista e Atualizada (ARA) © 1993
+e Nova Almeida Atualizada (NAA) © 2017 Sociedade Bíblica do Brasil; Nova Versão
+Internacional (NVI) © 2000, 2011 Biblica, Inc. Usados como citações curtas, com crédito,
+para fins de estudo bíblico.
 
 ## Desenhos
 

@@ -156,6 +156,8 @@
       volume: 'alto',
       musica: 'media',
       trilha: 'moderna',
+      /* versão da Bíblia das citações (js/versoes.js); a NTLH é a padrão */
+      versao: 'ntlh',
       historico: [],
       /* Aposta Final: rodadas já jogadas e os representantes sorteados em cada uma */
       finalRodada: 0,
@@ -190,10 +192,11 @@
   Som.nivel = S.volume;
   Musica.nivel = S.musica;
   Musica.trilha = S.trilha;
+  Versoes.aplicar(S.versao);
 
   function novoJogo() {
     const manter = {
-      titulo: S.titulo, subtitulo: S.subtitulo, salario: S.salario, tempo: S.tempo, som: S.som, volume: S.volume, musica: S.musica, trilha: S.trilha,
+      titulo: S.titulo, subtitulo: S.subtitulo, salario: S.salario, tempo: S.tempo, som: S.som, volume: S.volume, musica: S.musica, trilha: S.trilha, versao: S.versao,
       times: S.times.map(t => ({ nome: t.nome, emoji: t.emoji, cor: t.cor, pontos: 0, membros: t.membros.slice(), jogaram: [] }))
     };
     S = Object.assign(estadoPadrao(), manter);
@@ -2277,7 +2280,7 @@
           <h1>${esc(S.titulo)}</h1>
           <span class="sub">${esc(S.subtitulo)}</span>
           <p class="lema">Dois times, ${MODS.length} jogos diferentes e muita Bíblia. Que vença quem mais aprendeu!</p>
-          <p class="credito-biblia">Versículos na Nova Tradução na Linguagem de Hoje (NTLH) © Sociedade Bíblica do Brasil.</p>
+          <p class="credito-biblia">Versículos na ${Versoes.credito(S.versao)}.</p>
           <div class="inicio-botoes">
             ${S.emJogo
               ? '<button class="btn primario grande" id="b-cont">Continuar o jogo</button><button class="btn grande" id="b-novo">Novo jogo</button>'
@@ -2308,7 +2311,7 @@
     el.placar.innerHTML = '';
     const r = {
       times: S.times.map(t => ({ nome: t.nome, emoji: t.emoji, cor: t.cor, membrosTxt: t.membros.join('\n') })),
-      titulo: S.titulo, subtitulo: S.subtitulo, salario: S.salario, tempo: S.tempo, som: S.som, volume: S.volume, musica: S.musica, trilha: S.trilha
+      titulo: S.titulo, subtitulo: S.subtitulo, salario: S.salario, tempo: S.tempo, som: S.som, volume: S.volume, musica: S.musica, trilha: S.trilha, versao: S.versao
     };
 
     function estilo(cor) { const c = CORES[cor] || CORES.carmesim; return `--c:${c.base};--c-esc:${c.escura};--c-txt:${c.texto}`; }
@@ -2365,6 +2368,7 @@
             <div><span class="rotulo">Volume dos sons</span>${seg('volume', [['normal', 'Normal'], ['alto', 'Alto'], ['maximo', 'Máximo']])}<p class="ajuda-campo">Ao trocar, toca um som de teste.</p></div>
             <div><span class="rotulo">Música de fundo</span>${seg('musica', [['desligada', 'Desligada'], ['baixa', 'Baixa'], ['media', 'Média'], ['alta', 'Alta']])}<p class="ajuda-campo">Composta na hora, sem repetir; nas perguntas fica mais baixa. Atalho: N.</p></div>
             <div><span class="rotulo">Trilha sonora</span>${seg('trilha', Object.entries(Musica.TRILHAS))}<p class="ajuda-campo">${r.trilha === 'desenho' ? 'Jazz de desenho animado antigo, com chiado de disco.' : 'Swing animado alternando com eletrônico épico.'} Ao trocar, já começa a tocar.</p></div>
+            <div class="largo"><span class="rotulo">Versão da Bíblia</span>${seg('versao', Versoes.LISTA.map(v => [v.id, v.sigla]))}<p class="ajuda-campo">${Versoes.info(r.versao).nome}${r.versao === 'ntlh' ? ' (padrão)' : ''}. Muda as citações do Versículo Embaralhado e do Quem Disse?, a resposta de Mt 18:22 e os nomes do fruto do Espírito.</p></div>
             <div class="inteiro">
               <span class="rotulo">Durante o jogo</span>
               <div class="cf-acoes">
@@ -2460,6 +2464,8 @@
       Musica.nivel = S.musica;
       S.trilha = r.trilha;
       Musica.trilha = S.trilha;
+      S.versao = r.versao;
+      Versoes.aplicar(S.versao);
       salvar();
       irPainel();
       /* times montados: a vinheta de abertura passa por cima e, quando acaba, já está o painel dos jogos */
@@ -3059,7 +3065,7 @@
         <h1 class="vencedor">${empate ? 'Empate!' : nomeTime(v)}</h1>
         <div class="placar-final">${nomeTime(0)} <b>${fmtInt(a.pontos)}</b> &nbsp;×&nbsp; <b>${fmtInt(b.pontos)}</b> ${nomeTime(1)}</div>
         <blockquote class="versiculo-final">“Jesus Cristo é o mesmo ontem, hoje e sempre.”<cite>Hebreus 13:8</cite></blockquote>
-        <p class="credito-biblia">Textos bíblicos: Nova Tradução na Linguagem de Hoje (NTLH) © 2000 Sociedade Bíblica do Brasil.</p>
+        <p class="credito-biblia">Textos bíblicos: ${Versoes.credito(S.versao)}.</p>
       </div>`;
     function festa() {
       Som.fanfarra();

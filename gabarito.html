@@ -119,6 +119,7 @@
 
   <script src="js/emoji.js"></script>
   <script src="js/dados.js"></script>
+  <script src="js/versoes.js"></script>
   <script>
   (function () {
     'use strict';
@@ -129,6 +130,8 @@
     try {
       const salvo = JSON.parse(localStorage.getItem('quiz-ebd-v1') || 'null');
       if (salvo && salvo.salario > 0) salario = salvo.salario;
+      /* mesma versão da Bíblia escolhida nos Ajustes do jogo */
+      if (salvo && salvo.versao) Versoes.aplicar(salvo.versao);
     } catch (e) { /* sem jogo salvo */ }
     const diaria = Math.ceil(Math.round(salario / 30 * 1e6) / 1e4) / 100;
 
@@ -188,7 +191,8 @@
     document.getElementById('lista').innerHTML = blocos.join('');
     document.getElementById('sub').textContent =
       `As perguntas aparecem no jogo em ordem sorteada; use a busca para achar a pergunta da vez. ` +
-      `Valores em reais: 1 dia de trabalho = salário mínimo de ${brl(salario)} ÷ 30 = ${brl(diaria)} (o salário muda em Ajustes, no jogo).`;
+      `Valores em reais: 1 dia de trabalho = salário mínimo de ${brl(salario)} ÷ 30 = ${brl(diaria)} (o salário muda em Ajustes, no jogo). ` +
+      `Citações bíblicas: ${Versoes.credito()} (a versão também se escolhe em Ajustes).`;
 
     /* busca: ignora acentos e maiúsculas, esconde o que não combina */
     const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
