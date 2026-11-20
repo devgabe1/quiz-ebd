@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gabarito do Quiz Bíblico</title>
-  <link rel="stylesheet" href="css/fontes.css">
+  <link rel="stylesheet" href="css/fontes.css?v=20261119c">
   <style>
     :root {
       --tinta: #2A1A3E;
@@ -102,6 +102,7 @@
       .item { padding: 4px 0; }
       section { margin-top: 12px; }
     }
+  .sua { display: inline-block; padding: 0 6px; border-radius: 99px; background: #2479D8; color: #fff; font-size: 11px; font-weight: 800; vertical-align: 1px; }
   img.emoji { height: 1.18em; width: 1.18em; margin: -0.09em 0.06em; vertical-align: -0.24em; }
   </style>
 </head>
@@ -117,9 +118,10 @@
   <main id="lista"></main>
   <p class="vazio" id="vazio" hidden>Nada encontrado com essa busca.</p>
 
-  <script src="js/emoji.js"></script>
-  <script src="js/dados.js"></script>
-  <script src="js/versoes.js"></script>
+  <script src="js/emoji.js?v=20261119c"></script>
+  <script src="js/dados.js?v=20261119c"></script>
+  <script src="js/versoes.js?v=20261119c"></script>
+  <script src="js/banco.js?v=20261119c"></script>
   <script>
   (function () {
     'use strict';
@@ -176,7 +178,7 @@
         return item(esc(q.frase), esc(r), q.versiculo, esc(q.explicacao));
       },
       escolha(m, q) { return item(`“${esc(q.frase)}”`, esc(q.opcoes[0]), q.versiculo); },
-      ordem(m, q) { return item(esc(q.titulo), `<ol class="mini">${q.eventos.map(e => `<li>${esc(e.texto)} <span class="ref" style="display:inline">(${esc(e.ref)})</span></li>`).join('')}</ol>`, ''); },
+      ordem(m, q) { return item(esc(q.titulo), `<ol class="mini">${q.eventos.map(e => `<li>${esc(e.texto)} ${e.ref ? `<span class="ref" style="display:inline">(${esc(e.ref)})</span>` : ''}</li>`).join('')}</ol>`, ''); },
       intruso(m, q) { return item(q.itens.map(esc).join(', '), esc(q.itens[3]), '', `${esc(q.grupo)}. ${esc(q.explicacao)}`); },
       cardapio(m, q) { return item(`${esc(q.prato)}<span class="det">${esc(q.descricao)}</span>`, esc(q.opcoes[0]), q.versiculo); },
       embaralhado(m, q) { return item(esc(q.texto), esc(q.versiculo), ''); },
@@ -184,11 +186,15 @@
       relampago(m, q) { return item(esc(q.titulo), `<ol class="mini">${q.itens.map(([p, r]) => `<li><span style="font-weight:600;color:var(--tinta)">${esc(p)}</span> ${esc(r)}</li>`).join('')}</ol>`, ''); }
     };
 
+    /* perguntas desligadas em Ajustes → Perguntas ficam fora; as criadas ganham a marca "sua" */
+    const marca = (q, html) => q._nova ? html.replace('<div class="q">', '<div class="q"><span class="sua">sua</span> ') : html;
     const blocos = Q.modulos.map(m => {
-      const linhas = m.perguntas.map(q => LINHA[m.tipo](m, q)).join('');
-      return `<section><h2>${m.icone} ${esc(m.nome)}<small>${m.perguntas.length} ${m.perguntas.length === 1 ? 'pergunta' : 'perguntas'}</small></h2>${linhas}</section>`;
+      const ps = m.perguntas.filter(q => !q._off);
+      const linhas = ps.map(q => marca(q, LINHA[m.tipo](m, q))).join('');
+      return `<section><h2>${m.icone} ${esc(m.nome)}<small>${ps.length} ${ps.length === 1 ? 'pergunta' : 'perguntas'}</small></h2>${linhas}</section>`;
     });
-    blocos.push(`<section><h2>🏆 Aposta Final<small>${Q.final.length} temas</small></h2>${Q.final.map(f => item(`<b>${esc(f.tema)}</b><br>${esc(f.pergunta)}`, esc(f.resposta), f.versiculo)).join('')}</section>`);
+    const finais = Q.final.filter(f => !f._off);
+    blocos.push(`<section><h2>🏆 Aposta Final<small>${finais.length} temas</small></h2>${finais.map(f => marca(f, item(`<b>${esc(f.tema)}</b><br>${esc(f.pergunta)}`, esc(f.resposta), f.versiculo))).join('')}</section>`);
     document.getElementById('lista').innerHTML = blocos.join('');
     document.getElementById('sub').textContent =
       `As perguntas aparecem no jogo em ordem sorteada; use a busca para achar a pergunta da vez. ` +

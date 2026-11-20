@@ -211,14 +211,16 @@
     const o = S.ordem[id];
     if (!o || o.length !== n) S.ordem[id] = embaralhar([...Array(n).keys()]);
   }
+  /* perguntas desligadas em Ajustes → Perguntas (js/banco.js) não entram no jogo */
   function restantes(id) {
-    const n = MOD[id].perguntas.length;
-    return n - (S.usadas[id] || []).filter(i => i < n).length;
+    const usadas = S.usadas[id] || [];
+    return MOD[id].perguntas.filter((q, i) => !q._off && !usadas.includes(i)).length;
   }
   function proximaPergunta(id) {
     garantirOrdem(id);
     const usadas = S.usadas[id] || [];
-    for (const i of S.ordem[id]) if (!usadas.includes(i)) return i;
+    const ps = MOD[id].perguntas;
+    for (const i of S.ordem[id]) if (!usadas.includes(i) && ps[i] && !ps[i]._off) return i;
     return null;
   }
   function marcarUsada(id, idx) {
@@ -2307,6 +2309,189 @@
     teclasLocais = { Enter: () => (cont || $('#b-novo')).click() };
   }
 
+  /* ---------- Ajustes → Perguntas: desligar perguntas e criar as suas (js/banco.js).
+     Fica salvo só neste navegador; o arquivo exportado leva para outro computador. */
+  let pergAberto = MODS[0].id;
+  let aoFecharPerguntas = null;   /* quem abriu (os Ajustes) redesenha ao fechar */
+  function nomeDoJogo(id) { return id === Banco.FINAL ? 'Aposta Final' : MOD[id].nome; }
+  function iconeDoJogo(id) { return id === Banco.FINAL ? '🏆' : MOD[id].icone; }
+  /* uma linha que identifica a pergunta (mostra a resposta: é a tela de quem comanda) */
+  function resumoPergunta(id, q) {
+    const t = {
+      tanabiblia: () => `${q.frase} <b>${q.resposta ? 'Está' : 'Não está'}</b>`,
+      aconteceu: () => `${q.frase} <b>${q.resposta ? 'Aconteceu' : 'Não aconteceu'}</b>`,
+      quemdisse: () => `“${q.frase}” <b>${esc(q.opcoes[0])}</b>`,
+      emoji: () => `${q.emojis} <b>${esc(q.resposta)}</b>`,
+      numeros: () => `${q.pergunta} <b>${fmtNum(q.resposta)} ${esc(q.unidade || '')}</b>`,
+      versiculo: () => `${q.texto} <b>${esc(q.versiculo)}</b>`,
+      intruso: () => `${q.itens.slice(0, 3).map(esc).join(', ')} <b>intruso: ${esc(q.itens[3])}</b>`,
+      cardapio: () => `${q.emoji || ''} ${q.prato} <b>${esc(q.opcoes[0])}</b>`,
+      perfil: () => `${q.avatar || ''} <b>${esc(q.nome)}</b> (${q.pistas.length} pistas)`,
+      zoom: () => `${q.emoji} <b>${esc(q.objeto)}</b>`,
+      linha: () => `${q.titulo} <b>${q.eventos.length} acontecimentos</b>`,
+      lista: () => `${q.titulo} <b>${q.itens.length} itens</b>`,
+      relampago: () => `${q.titulo} <b>${q.itens.length} perguntas</b>`,
+      tamanho: () => `${q.emoji} ${q.titulo} <b>${fmtNum(q.resposta)} ${q.unidade}</b>`,
+      cambio: () => `${q.emoji} ${q.titulo}`,
+      maisoumenos: () => `${q.emoji} ${q.pergunta}`,
+      [Banco.FINAL]: () => `<b>${esc(q.tema)}:</b> ${esc(q.pergunta)}`
+    }[id];
+    try { return t ? t() : esc(q.titulo || q.frase || ''); } catch (e) { return '(pergunta)'; }
+  }
+
+  function abrirPerguntas() {
+    const ids = MODS.map(m => m.id).concat(Banco.FINAL);
+    if (!ids.includes(pergAberto)) pergAberto = ids[0];
+    const c = Banco.contagem();
+    const id = pergAberto;
+    const ps = Banco.lista(id);
+    const total = ps.length, ativas = Banco.ativas(id);
+    const fichas = ids.map(k => {
+      const n = Banco.lista(k).length, a = Banco.ativas(k);
+      return `<button type="button" class="pg-ficha${k === id ? ' ativa' : ''}${a < n ? ' mexida' : ''}" data-id="${k}">
+        <span>${iconeDoJogo(k)}</span>${nomeDoJogo(k)}<small>${a}/${n}</small></button>`;
+    }).join('');
+    const linhas = ps.map((q, i) => {
+      const chave = Banco.chaveDe(q, i);
+      return `<li class="pg-item${q._off ? ' desligada' : ''}${q._nova ? ' nova' : ''}">
+        <button type="button" class="pg-chave" data-chave="${esc(chave)}" aria-pressed="${!q._off}" title="${q._off ? 'Ligar' : 'Desligar'} esta pergunta">
+          <span class="pg-trilho"><span></span></span></button>
+        <span class="pg-txt">${q._nova ? '<span class="pg-sua">sua</span>' : ''}${resumoPergunta(id, q)}</span>
+        ${q._nova ? `<span class="pg-acoes"><button type="button" class="btn sutil pg-editar" data-nova="${esc(q._nova)}" title="Editar">✏️</button>
+          <button type="button" class="btn sutil pg-apagar" data-nova="${esc(q._nova)}" title="Apagar">🗑️</button></span>` : ''}
+      </li>`;
+    }).join('');
+    const minimo = id === Banco.FINAL ? RODADAS_FINAL : 2;
+    abrirModal(`<div class="cartao modal modal-perguntas" role="dialog" aria-modal="true">
+      <h2>Perguntas do jogo</h2>
+      <p class="ajuda-campo">Desligue as perguntas que não quer usar e crie as suas. Fica salvo <b>só neste navegador</b>
+        (não vai para o site); para levar a outro computador ou guardar uma cópia, use <b>Exportar arquivo</b>.
+        A lista mostra as respostas: prepare antes do culto, não no telão.</p>
+      <div class="pg-fichas">${fichas}</div>
+      <div class="pg-cab">
+        <h3>${iconeDoJogo(id)} ${nomeDoJogo(id)} <small>${ativas} de ${total} ligadas${id !== Banco.FINAL ? ` · ${Math.floor(ativas / 2)} ${Math.floor(ativas / 2) === 1 ? 'rodada' : 'rodadas'}` : ''}</small></h3>
+        ${Banco.podeCriar(id) ? '<button type="button" class="btn azul" id="pg-nova">➕ Nova pergunta</button>' : '<span class="ajuda-campo">Neste jogo dá só para desligar (as perguntas dele usam desenhos e contas próprias).</span>'}
+      </div>
+      ${ativas < minimo ? `<p class="pg-alerta">${id === Banco.FINAL ? `A Aposta Final precisa de pelo menos ${RODADAS_FINAL} temas ligados.` : 'Com menos de 2 perguntas ligadas, este jogo fica fora do painel (cada rodada usa uma pergunta por time).'}</p>` : ''}
+      <ul class="pg-lista">${linhas}</ul>
+      <div class="modal-acoes pg-rodape">
+        <span class="pg-resumo">${c.desligadas} desligada${c.desligadas === 1 ? '' : 's'} · ${c.novas} criada${c.novas === 1 ? '' : 's'}</span>
+        <button type="button" class="btn sutil" id="pg-exportar">💾 Exportar arquivo</button>
+        <button type="button" class="btn sutil" id="pg-importar">📂 Importar arquivo</button>
+        <button type="button" class="btn sutil" id="pg-restaurar">↺ Voltar ao original</button>
+        <button type="button" class="btn primario" id="pg-ok">Pronto</button>
+      </div>
+      <input type="file" id="pg-arquivo" accept=".json,application/json" hidden>
+    </div>`);
+    const lista = $('.pg-lista', el.sobre);
+    $$('.pg-ficha', el.sobre).forEach(b => { b.onclick = () => { Som.clique(); pergAberto = b.dataset.id; abrirPerguntas(); }; });
+    $$('.pg-chave', el.sobre).forEach(b => {
+      b.onclick = () => {
+        const ligar = b.getAttribute('aria-pressed') !== 'true';
+        if (!ligar && id === Banco.FINAL && Banco.ativas(id) <= RODADAS_FINAL) { aviso(`A Aposta Final precisa de pelo menos ${RODADAS_FINAL} temas ligados.`); Som.erro(); return; }
+        Som.clique();
+        const rolagem = lista.scrollTop;
+        Banco.desligar(id, b.dataset.chave, !ligar);
+        abrirPerguntas();
+        $('.pg-lista', el.sobre).scrollTop = rolagem;
+      };
+    });
+    $$('.pg-editar', el.sobre).forEach(b => { b.onclick = () => { Som.clique(); abrirFormPergunta(id, b.dataset.nova); }; });
+    $$('.pg-apagar', el.sobre).forEach(b => {
+      b.onclick = () => confirmar('Apagar esta pergunta que você criou?', () => { Banco.apagarNova(id, b.dataset.nova); abrirPerguntas(); }, 'Apagar');
+    });
+    const nova = $('#pg-nova'); if (nova) nova.onclick = () => { Som.clique(); abrirFormPergunta(id); };
+    $('#pg-exportar').onclick = () => {
+      const blob = new Blob([Banco.exportar()], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `perguntas-quiz-ebd-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+      aviso('Arquivo salvo na pasta de downloads.');
+    };
+    const arq = $('#pg-arquivo');
+    $('#pg-importar').onclick = () => arq.click();
+    arq.onchange = () => {
+      const f = arq.files && arq.files[0];
+      if (!f) return;
+      const leitor = new FileReader();
+      leitor.onload = () => {
+        confirmar('Importar este arquivo? As perguntas desligadas e criadas aqui serão trocadas pelas do arquivo.', () => {
+          try {
+            const r = Banco.importar(String(leitor.result));
+            aviso(`Importado: ${r.desligadas} desligada${r.desligadas === 1 ? '' : 's'} e ${r.novas} criada${r.novas === 1 ? '' : 's'}.`, 3200);
+          } catch (e) { aviso(e.message && e.message.includes('Quiz') ? e.message : 'Não consegui ler esse arquivo.', 3200); Som.erro(); }
+          abrirPerguntas();
+        }, 'Importar');
+      };
+      leitor.readAsText(f);
+    };
+    $('#pg-restaurar').onclick = () => confirmar('Voltar às perguntas originais? Todas as perguntas criadas aqui serão apagadas e as desligadas voltam a valer. (Dica: exporte um arquivo antes.)',
+      () => { Banco.restaurar(); abrirPerguntas(); }, 'Voltar ao original');
+    $('#pg-ok').onclick = fecharModal;
+    teclasModal.Enter = fecharModal;
+    aoFecharModal = aoFecharPerguntas;
+  }
+
+  /* formulário de pergunta nova (ou edição de uma pergunta criada) */
+  function abrirFormPergunta(id, idNova) {
+    const campos = Banco.FORMULARIOS[id];
+    const d = idNova ? Banco.campos(id, Banco.lista(id).find(q => q._nova === idNova) || {}) : {};
+    if (idNova) { const bruto = Banco.dadosNova(id, idNova); if (bruto) Object.assign(d, bruto); }
+    const val = (k, padrao) => esc(d[k] != null ? (Array.isArray(d[k]) ? d[k].join('\n') : d[k]) : (padrao || ''));
+    const campo = f => {
+      const ex = f.ex ? ` placeholder="${esc('Ex.: ' + f.ex)}"` : '';
+      if (f.tipo === 'area') return `<textarea class="campo-texto" data-k="${f.k}" rows="2"${ex}>${val(f.k)}</textarea>`;
+      if (f.tipo === 'linhas') return `<textarea class="campo-texto" data-k="${f.k}" rows="5"${ex}>${val(f.k)}</textarea>`;
+      if (f.tipo === 'vf' || f.tipo === 'escolha') {
+        const atual = d[f.k] != null ? String(d[f.k]) : f.opcoes[0][0];
+        return `<div class="segmentado" data-k="${f.k}" data-v="${esc(atual)}">${f.opcoes.map(([v, t]) => `<button type="button" data-v="${esc(v)}" aria-pressed="${v === atual}">${t}</button>`).join('')}</div>`;
+      }
+      if (f.tipo === 'opcoes') {
+        const vs = Array.isArray(d[f.k]) ? d[f.k] : [];
+        return `<div class="pg-opcoes">${f.nomes.map((nm, i) => `<label class="${i === (f.intrusoNoFim ? 3 : 0) ? 'certa' : ''}"><span>${nm}</span><input class="campo-texto" data-k="${f.k}" data-i="${i}" value="${esc(vs[i] || '')}"></label>`).join('')}</div>`;
+      }
+      return `<input class="campo-texto${f.curto ? ' curto' : ''}" data-k="${f.k}" value="${val(f.k)}"${ex}${f.tipo === 'numero' ? ' inputmode="decimal"' : ''}>`;
+    };
+    abrirModal(`<div class="cartao modal modal-perguntas" role="dialog" aria-modal="true">
+      <h2>${idNova ? 'Editar pergunta' : 'Nova pergunta'}</h2>
+      <p class="ajuda-campo">${iconeDoJogo(id)} ${nomeDoJogo(id)}</p>
+      <div class="pg-form">${campos.map(f => `<div class="pg-campo"><span class="rotulo">${f.rot}${f.obrig ? '' : ' <small>(opcional)</small>'}</span>${campo(f)}</div>`).join('')}</div>
+      <p class="pg-alerta" id="pg-erro" hidden></p>
+      <div class="modal-acoes">
+        <button type="button" class="btn sutil" id="pg-cancelar">Cancelar</button>
+        <button type="button" class="btn primario" id="pg-salvar">${idNova ? 'Salvar' : 'Adicionar'}</button>
+      </div></div>`);
+    travaModal = true;   /* clique fora não apaga o que foi digitado */
+    $$('.pg-form .segmentado', el.sobre).forEach(sg => {
+      $$('button', sg).forEach(b => {
+        b.onclick = () => { sg.dataset.v = b.dataset.v; $$('button', sg).forEach(x => x.setAttribute('aria-pressed', String(x === b))); };
+      });
+    });
+    function ler() {
+      const r = {};
+      campos.forEach(f => {
+        if (f.tipo === 'vf' || f.tipo === 'escolha') r[f.k] = $(`.segmentado[data-k="${f.k}"]`, el.sobre).dataset.v;
+        else if (f.tipo === 'opcoes') r[f.k] = $$(`[data-k="${f.k}"]`, el.sobre).map(x => x.value);
+        else r[f.k] = $(`[data-k="${f.k}"]`, el.sobre).value;
+      });
+      return r;
+    }
+    $('#pg-cancelar').onclick = () => { travaModal = false; abrirPerguntas(); };
+    $('#pg-salvar').onclick = () => {
+      const r = ler();
+      const erro = Banco.validar(id, r);
+      if (erro) { const p = $('#pg-erro'); p.textContent = erro; p.hidden = false; Som.erro(); return; }
+      Banco.salvarNova(id, r, idNova);
+      travaModal = false;
+      Som.acerto();
+      aviso(idNova ? 'Pergunta atualizada.' : 'Pergunta adicionada.');
+      abrirPerguntas();
+    };
+    const primeiro = $('.pg-form .campo-texto', el.sobre); if (primeiro) primeiro.focus();
+  }
+
   function irConfig(origem) {
     limparCtx(); Crono.parar(); fecharModal();
     ctx = null; teclasLocais = {};
@@ -2373,6 +2558,13 @@
             <div><span class="rotulo">Trilha sonora</span>${seg('trilha', Object.entries(Musica.TRILHAS))}<p class="ajuda-campo">${r.trilha === 'desenho' ? 'Jazz de desenho animado antigo, com chiado de disco.' : 'Swing animado alternando com eletrônico épico.'} Ao trocar, já começa a tocar.</p></div>
             <div class="largo"><span class="rotulo">Versão da Bíblia</span>${seg('versao', Versoes.LISTA.map(v => [v.id, v.sigla]))}<p class="ajuda-campo">${Versoes.info(r.versao).nome}${r.versao === 'nvi' ? ' (padrão)' : ''}. Muda as citações do Versículo Embaralhado e do Quem Disse?, a resposta de Mt 18:22 e os nomes do fruto do Espírito.</p></div>
             <div class="inteiro">
+              <span class="rotulo">Perguntas</span>
+              <div class="cf-acoes">
+                <button type="button" class="btn azul" id="cf-perguntas">📝 Escolher e criar perguntas <span class="cf-dica">${(() => { const c = Banco.contagem(); return c.desligadas || c.novas ? `${c.desligadas} desligada${c.desligadas === 1 ? '' : 's'} · ${c.novas} criada${c.novas === 1 ? '' : 's'}` : 'todas as originais'; })()}</span></button>
+              </div>
+              <p class="ajuda-campo">Desligue perguntas ou crie as suas. Fica salvo só neste navegador; dá para exportar um arquivo e levar para outro computador.</p>
+            </div>
+            <div class="inteiro">
               <span class="rotulo">Durante o jogo</span>
               <div class="cf-acoes">
                 ${origem === 'painel' ? `<button type="button" class="btn azul" id="cf-vez">⇄ Trocar a vez <span class="cf-dica">agora: ${nomeTime(S.vez)} · tecla V</span></button>
@@ -2392,6 +2584,8 @@
       ligar('cf-placar', () => { Som.clique(); abrirAjustePlacar(); });
       ligar('cf-tela', () => { Som.clique(); telaCheia(); });
       ligar('cf-atalhos', () => { Som.clique(); ajuda(); });
+      /* ao fechar a janela de perguntas, redesenha para atualizar a contagem (sem perder o que foi digitado) */
+      ligar('cf-perguntas', () => { Som.clique(); lerCampos(); aoFecharPerguntas = desenhar; abrirPerguntas(); });
       /* encerrar descarta os ajustes não salvos (o som volta ao que estava) */
       ligar('cf-encerrar', () => { Som.clique(); confirmar('Encerrar o jogo e mostrar o campeão?', () => { Som.ligado = S.som; Som.nivel = S.volume; Musica.nivel = S.musica; Musica.trilha = S.trilha; irFim(); }, 'Encerrar'); });
       $$('[data-nome]').forEach(inp => { inp.oninput = () => { r.times[+inp.dataset.nome].nome = inp.value; }; });
@@ -2638,7 +2832,7 @@
   /* tema da rodada: sorteado entre os que ainda não foram usados */
   function temaFinal(evitar) {
     const usadas = S.usadas.final || [];
-    const todos = DADOS.final.map((_, i) => i);
+    const todos = DADOS.final.map((f, i) => (f._off ? -1 : i)).filter(i => i >= 0);
     let livres = todos.filter(i => !usadas.includes(i) && i !== evitar);
     if (!livres.length) livres = todos.filter(i => !usadas.includes(i));
     if (!livres.length) livres = todos;

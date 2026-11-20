@@ -240,10 +240,35 @@ Na tela inicial, os quatro losangos são os símbolos da Igreja do Evangelho Qua
 a cruz (Jesus salva), a pomba (Jesus batiza com o Espírito Santo), o cálice (Jesus cura,
 desenhado em `js/arte.js`, porque não existe emoji de cálice) e a coroa (Jesus vai voltar).
 
-## Editar perguntas
+## Escolher e criar perguntas (sem mexer no código)
 
-Todas as perguntas estão em `js/dados.js`, com comentários. Para trocar uma,
+Em **Ajustes → Perguntas → Escolher e criar perguntas**, quem comanda prepara o jogo antes
+do culto:
+
+- **Desligar:** cada pergunta tem uma chave. Desligada, ela não aparece no jogo nem no
+  gabarito. Um jogo com menos de 2 perguntas ligadas sai do painel (cada rodada usa uma
+  pergunta por time); a Aposta Final precisa de pelo menos 2 temas.
+- **Criar:** o botão **Nova pergunta** abre um formulário próprio de cada jogo (frase,
+  opções com a certa marcada, pistas, itens, ordem certa…). As perguntas criadas ganham a
+  marca **sua** e podem ser editadas ou apagadas. Dá para criar em todos os jogos, menos
+  "Do Tamanho Certo", "Quanto Vale Hoje?" e "Mais ou Menos?", que usam desenhos e contas
+  próprias (nesses, só desligar).
+- **Onde fica salvo:** só no navegador deste computador (não vai para o site, e as outras
+  pessoas que abrem o site não veem). Limpar os dados do navegador apaga tudo.
+- **Exportar / Importar arquivo:** gera um `.json` com tudo o que foi desligado e criado,
+  para guardar uma cópia ou levar para o computador do telão. Importar troca o que está
+  salvo pelo conteúdo do arquivo.
+- **Voltar ao original:** apaga as perguntas criadas e liga todas de novo.
+
+A lista mostra as respostas: prepare antes, não com a janela aberta no telão.
+
+## Editar perguntas no código
+
+Todas as perguntas originais estão em `js/dados.js`, com comentários. Para trocar uma,
 copie um item parecido, mude o texto e salve.
+
+Ao publicar uma versão nova no GitHub Pages, aumente o `?v=` dos arquivos em `index.html`
+e `gabarito.html`: assim o navegador de quem já abriu o site busca os arquivos novos.
 
 Medidas usadas: 1 côvado ≈ 45 cm; 1 siclo ≈ 11,4 g; 1 talento ≈ 34 kg;
 1 denário = 1 dia de trabalho (Mt 20:2). Em reais, 1 dia de trabalho = **salário mínimo ÷ 30**,
